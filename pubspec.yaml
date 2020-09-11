@@ -1,4 +1,4 @@
-name: fluzz
+name: hiphop_player
 description: A new Flutter application.
 
 version: 1.0.0+1
@@ -28,6 +28,8 @@ dependencies:
   json_annotation: ^3.0.1
   # svg
   flutter_svg: ^0.18.1
+  # 音频播放服务
+  audio_service: ^0.14.1
 
 dev_dependencies:
   flutter_test:

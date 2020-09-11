@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +24,12 @@ class HomePage extends StatefulWidget {
 /// 主页面状态
 ///
 class _HomePageState extends State<HomePage> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

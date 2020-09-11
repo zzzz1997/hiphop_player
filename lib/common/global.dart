@@ -12,8 +12,7 @@ import '../generated/l10n.dart';
 ///
 class Global {
   // 导航键
-  static final GlobalKey<NavigatorState> key =
-      GlobalKey(debugLabel: 'navigate_key');
+  static final key = GlobalKey<NavigatorState>(debugLabel: 'navigate_key');
 
   // 导航器
   static NavigatorState get navigator => key.currentState;
