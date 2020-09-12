@@ -3,8 +3,10 @@
   "appName": "FLUZZ",
   "darkMode": "夜间模式",
   "colorTheme": "色彩主题",
+  "setting": "设置",
   "font": "字体",
   "autoBySystem": "跟随系统",
   "fontKuaiLe": "快乐字体",
-  "language": "语言"
+  "language": "语言",
+  "exit": "退出"
 }

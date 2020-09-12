@@ -3,8 +3,10 @@
   "appName": "FLUZZ",
   "darkMode": "Dark Mode",
   "colorTheme": "Color Theme",
+  "setting": "Setting",
   "font": "Font",
   "autoBySystem": "Auto",
   "fontKuaiLe": "ZCOOL KuaiLe",
-  "language": "Language"
+  "language": "Language",
+  "exit": "Exit"
 }

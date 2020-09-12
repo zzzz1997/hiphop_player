@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../common/global.dart';
 import '../page/home.dart';
 import '../page/splash.dart';
+import '../page/setting.dart';
 
 ///
 /// 动画类型
@@ -31,6 +32,9 @@ class MyRoute {
 
   // 主页路由
   static const home = 'home';
+
+  // 设置路由
+  static const setting = 'setting';
 
   ///
   /// 构造路由
@@ -127,6 +131,8 @@ class MyRoute {
         return SplashPage();
       case home:
         return HomePage();
+      case setting:
+        return SettingPage();
       default:
         return Scaffold(
           body: Center(

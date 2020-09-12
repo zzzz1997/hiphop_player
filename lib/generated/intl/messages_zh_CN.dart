@@ -26,8 +26,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoBySystem" : MessageLookupByLibrary.simpleMessage("跟随系统"),
     "colorTheme" : MessageLookupByLibrary.simpleMessage("色彩主题"),
     "darkMode" : MessageLookupByLibrary.simpleMessage("夜间模式"),
+    "exit" : MessageLookupByLibrary.simpleMessage("退出"),
     "font" : MessageLookupByLibrary.simpleMessage("字体"),
     "fontKuaiLe" : MessageLookupByLibrary.simpleMessage("快乐字体"),
-    "language" : MessageLookupByLibrary.simpleMessage("语言")
+    "language" : MessageLookupByLibrary.simpleMessage("语言"),
+    "setting" : MessageLookupByLibrary.simpleMessage("设置")
   };
 }

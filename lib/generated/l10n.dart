@@ -73,6 +73,16 @@ class S {
     );
   }
 
+  /// `Setting`
+  String get setting {
+    return Intl.message(
+      'Setting',
+      name: 'setting',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Font`
   String get font {
     return Intl.message(
@@ -108,6 +118,16 @@ class S {
     return Intl.message(
       'Language',
       name: 'language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit`
+  String get exit {
+    return Intl.message(
+      'Exit',
+      name: 'exit',
       desc: '',
       args: [],
     );

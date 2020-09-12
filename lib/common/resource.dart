@@ -64,6 +64,13 @@ class ImageHelper {
       fit: fit,
     );
   }
+
+  ///
+  /// 本地资源图片提供者
+  ///
+  static ImageProvider assetImageProvider(String name) {
+    return AssetImage(image(name));
+  }
 }
 
 ///
