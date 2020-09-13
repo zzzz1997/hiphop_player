@@ -1,9 +1,16 @@
 package com.zzapp.hiphop_player
 
+import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.provider.MediaStore
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry.Registrar
@@ -15,22 +22,25 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
  * @author zzzz1997
  * @date 20200912
  */
-class MusicPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
+class MusicPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
 
     // 通道
     private var channel: MethodChannel? = null
 
-    // 上下文
-    private var context: Context? = null
+    // 活动
+    private var activity: Activity? = null
 
     companion object {
         // 通道名
         val CHANNEL = "music"
 
+        /**
+         * 保留旧接入方式
+         */
         fun registerWith(registerWith: Registrar) {
             val instance = MusicPlugin()
             instance.channel = MethodChannel(registerWith.messenger(), CHANNEL)
-            instance.context = registerWith.context()
+            instance.activity = registerWith.activity()
             instance.channel!!.setMethodCallHandler(instance)
         }
     }
@@ -38,7 +48,6 @@ class MusicPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(binding.binaryMessenger, CHANNEL)
         channel!!.setMethodCallHandler(this)
-        context = binding.applicationContext
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -48,37 +57,43 @@ class MusicPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "find" -> {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-//                        && ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(context!!, [Manifest.permission.READ_EXTERNAL_STORAGE], 1)
-//                }
-                val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                val contentResolver = context!!.contentResolver
-                val cursor = contentResolver!!.query(uri, null, MediaStore.Audio.Media.IS_MUSIC + " = 1", null, null)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        && ContextCompat.checkSelfPermission(activity!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+                    return
+                }
+                val contentResolver = activity!!.contentResolver
+                val cursor = contentResolver!!.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, MediaStore.Audio.Media.IS_MUSIC + " = 1", null, null)
                         ?: return
                 if (!cursor.moveToFirst()) {
                     return
                 }
                 val id = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
-                val artist = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
-                val title = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
                 val album = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
+                val title = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
+                val artist = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
                 val duration = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)
                 val albumId = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
+                val uri = cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
 
                 val songs = ArrayList<HashMap<String, Any>>()
                 do {
-                    val song = HashMap<String, Any>()
-                    val songId = cursor.getLong(id)
+                    val songTitle = cursor.getString(title)
+                    val songArtist = cursor.getString(artist)
                     val songAlbumId = cursor.getLong(albumId)
-                    song["id"] = songId
-                    song["artist"] = cursor.getLong(artist)
-                    song["title"] = cursor.getLong(title)
-                    song["album"] = cursor.getLong(album)
+                    val song = HashMap<String, Any>()
+                    val extras = HashMap<String, Any>()
+                    extras["albumId"] = songAlbumId
+                    song["id"] = cursor.getString(uri)
+                    song["album"] = cursor.getString(album)
+                    song["title"] = songTitle
+                    song["artist"] = songArtist
                     song["duration"] = cursor.getLong(duration)
-                    song["albumId"] = songAlbumId
-                    song["uri"] = getUri(songId)
-                    song["albumArt"] = getAlbumArt(songAlbumId)
+                    song["artUri"] = getAlbumArt(songAlbumId)
+                    song["displayTitle"] = songTitle
+                    song["displaySubtitle"] = songArtist
+                    song["displayDescription"] = songTitle
+                    song["extras"] = extras
                     songs.add(song)
                 } while (cursor.moveToNext())
                 cursor.close()
@@ -86,6 +101,21 @@ class MusicPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             }
             else -> return
         }
+    }
+
+    override fun onDetachedFromActivity() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        activity = binding.activity
+    }
+
+    override fun onDetachedFromActivityForConfigChanges() {
     }
 
     /**
@@ -100,7 +130,7 @@ class MusicPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                 MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID)
         val selection = MediaStore.Audio.Media._ID + "=?"
         val selectionArgs = arrayOf(id.toString())
-        val cursor = context!!.contentResolver.query(mediaContentUri, projection, selection, selectionArgs, null)
+        val cursor = activity!!.contentResolver.query(mediaContentUri, projection, selection, selectionArgs, null)
 
         if (cursor!!.count >= 0) {
             cursor.moveToPosition(0)
@@ -117,7 +147,7 @@ class MusicPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
      */
     private fun getAlbumArt(albumId: Long): String {
         var path = ""
-        val cursor = context!!.contentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART),
+        val cursor = activity!!.contentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART),
                 MediaStore.Audio.Albums._ID + "=?", arrayOf<String>(java.lang.String.valueOf(albumId)),
                 null)
 

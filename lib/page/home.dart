@@ -1,15 +1,18 @@
 import 'dart:math';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hiphop_player/util/music_finder.dart';
+import 'package:hiphop_player/widget/player_bar.dart';
+import 'package:hiphop_player/widget/song_item.dart';
 import 'package:provider/provider.dart';
 
 import '../common/global.dart';
 import '../common/resource.dart';
 import '../common/route.dart';
-import '../model/locale.dart';
 import '../model/theme.dart';
 
 ///
@@ -27,6 +30,9 @@ class HomePage extends StatefulWidget {
 /// 主页面状态
 ///
 class _HomePageState extends State<HomePage> {
+  // 音乐列表
+  var _songs = List<MediaItem>();
+
   @override
   void initState() {
     super.initState();
@@ -38,21 +44,29 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(Global.s.appName),
       ),
-      body: SingleChildScrollView(
-        child: ListTileTheme(
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 30,
-          ),
-          child: Column(
-            children: <Widget>[
-              FlatButton(
-                child: Text('找歌'),
-                onPressed: () {
-                  MusicFinder.findSongs();
-                },
-              )
-            ],
-          ),
+      body: ListTileTheme(
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 30,
+        ),
+        child: Column(
+          children: <Widget>[
+            FlatButton(
+              child: Text('找歌${_songs.length}'),
+              onPressed: () async {
+                EasyLoading.show();
+                _songs = await MusicUtil.findSongs();
+                setState(() {});
+                EasyLoading.dismiss();
+              },
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (_, i) => SongItem(_songs, i),
+                itemCount: _songs.length,
+              ),
+            ),
+            PlayerBar(),
+          ],
         ),
       ),
       drawer: Drawer(

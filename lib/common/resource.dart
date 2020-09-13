@@ -77,5 +77,6 @@ class ImageHelper {
 ///
 /// 样式
 class Style {
-
+  // 灰色
+  static const greyColor = Colors.grey;
 }

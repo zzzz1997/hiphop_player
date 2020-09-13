@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -40,31 +41,33 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OKToast(
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<ThemeModel>(
-            create: (_) => ThemeModel(),
-          ),
-          ChangeNotifierProvider<LocaleModel>(
-            create: (_) => LocaleModel(),
-          ),
-        ],
-        child: Consumer2<ThemeModel, LocaleModel>(
-          builder: (_, themeModel, localeModel, __) => MaterialApp(
-            navigatorKey: Global.key,
-            title: title,
-            theme: themeModel.themeData(),
-            darkTheme: themeModel.themeData(platformDarkMode: true),
-            locale: localeModel.locale,
-            localizationsDelegates: const [
-              S.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: S.delegate.supportedLocales,
-            onGenerateRoute: MyRoute.generateRoute,
-            initialRoute: MyRoute.splash,
+      child: FlutterEasyLoading(
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider<ThemeModel>(
+              create: (_) => ThemeModel(),
+            ),
+            ChangeNotifierProvider<LocaleModel>(
+              create: (_) => LocaleModel(),
+            ),
+          ],
+          child: Consumer2<ThemeModel, LocaleModel>(
+            builder: (_, themeModel, localeModel, __) => MaterialApp(
+              navigatorKey: Global.key,
+              title: title,
+              theme: themeModel.themeData(),
+              darkTheme: themeModel.themeData(platformDarkMode: true),
+              locale: localeModel.locale,
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              onGenerateRoute: MyRoute.generateRoute,
+              initialRoute: MyRoute.splash,
+            ),
           ),
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -130,7 +131,7 @@ class MyRoute {
       case splash:
         return SplashPage();
       case home:
-        return HomePage();
+        return AudioServiceWidget(child: HomePage());
       case setting:
         return SettingPage();
       default:
