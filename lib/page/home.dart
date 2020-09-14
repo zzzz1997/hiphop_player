@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hiphop_player/sqflite/provider/music_item.dart';
+import 'package:hiphop_player/sqflite/sqflite.dart';
 import 'package:hiphop_player/util/music_finder.dart';
 import 'package:hiphop_player/widget/player_bar.dart';
 import 'package:hiphop_player/widget/song_item.dart';
@@ -33,9 +35,25 @@ class _HomePageState extends State<HomePage> {
   // 音乐列表
   var _songs = List<MediaItem>();
 
+  // 数量
+  var _count = 0;
+
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      EasyLoading.show();
+      _songs = await MusicItemProvider.queryAll();
+      _count = await MusicItemProvider.count();
+      if (_songs.isNotEmpty) {
+        _songs.forEach((e) {
+          print(e.toJson());
+        });
+        setState(() {});
+      }
+      EasyLoading.dismiss();
+    });
   }
 
   @override
@@ -51,14 +69,18 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: <Widget>[
             FlatButton(
-              child: Text('找歌${_songs.length}'),
+              child: Text('找歌$_count'),
               onPressed: () async {
                 EasyLoading.show();
                 _songs = await MusicUtil.findSongs();
-                setState(() {});
+                if (_songs.isNotEmpty) {
+                  setState(() {});
+                  MusicItemProvider.insertList(_songs);
+                }
                 EasyLoading.dismiss();
               },
             ),
+
             Expanded(
               child: ListView.builder(
                 itemBuilder: (_, i) => SongItem(_songs, i),
@@ -113,7 +135,8 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: ListTile(
                     title: Text(Global.s.exit),
-                    onTap: () {
+                    onTap: () async {
+                      await SqfliteUtil.close();
                       SystemChannels.platform
                           .invokeMethod('SystemNavigator.pop');
                     },

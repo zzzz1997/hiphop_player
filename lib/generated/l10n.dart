@@ -43,11 +43,21 @@ class S {
     );
   }
 
-  /// `FLUZZ`
+  /// `Hiphop Player`
   String get appName {
     return Intl.message(
-      'FLUZZ',
+      'Hiphop Player',
       name: 'appName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Song List`
+  String get songList {
+    return Intl.message(
+      'Song List',
+      name: 'songList',
       desc: '',
       args: [],
     );

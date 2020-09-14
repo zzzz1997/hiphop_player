@@ -1,6 +1,7 @@
 {
   "_locale": "en",
-  "appName": "FLUZZ",
+  "appName": "Hiphop Player",
+  "songList": "Song List",
   "darkMode": "Dark Mode",
   "colorTheme": "Color Theme",
   "setting": "Setting",

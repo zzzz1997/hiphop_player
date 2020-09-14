@@ -20,7 +20,10 @@ class MusicUtil {
   static Future<List<MediaItem>> findSongs() async {
     // var completer = Completer<List<MediaItem>>();
     List<dynamic> songs = await _channel.invokeMethod('find');
-    print(jsonEncode(songs));
+    // print(jsonEncode(songs));
+    if (songs == null) {
+      return [];
+    }
     return songs
         .map((m) => MediaItem.fromJson(Map<String, dynamic>.from(m)))
         .toList();

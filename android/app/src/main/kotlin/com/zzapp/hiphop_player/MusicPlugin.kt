@@ -60,12 +60,14 @@ class MusicPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAwar
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                         && ContextCompat.checkSelfPermission(activity!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+                    result.success(null)
                     return
                 }
                 val contentResolver = activity!!.contentResolver
                 val cursor = contentResolver!!.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, MediaStore.Audio.Media.IS_MUSIC + " = 1", null, null)
                         ?: return
                 if (!cursor.moveToFirst()) {
+                    result.success(null)
                     return
                 }
                 val id = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
@@ -78,6 +80,7 @@ class MusicPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAwar
 
                 val songs = ArrayList<HashMap<String, Any>>()
                 do {
+                    val songAlbum = cursor.getString(album)
                     val songTitle = cursor.getString(title)
                     val songArtist = cursor.getString(artist)
                     val songAlbumId = cursor.getLong(albumId)
@@ -85,14 +88,14 @@ class MusicPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAwar
                     val extras = HashMap<String, Any>()
                     extras["albumId"] = songAlbumId
                     song["id"] = cursor.getString(uri)
-                    song["album"] = cursor.getString(album)
+                    song["album"] = songAlbum
                     song["title"] = songTitle
                     song["artist"] = songArtist
                     song["duration"] = cursor.getLong(duration)
                     song["artUri"] = getAlbumArt(songAlbumId)
                     song["displayTitle"] = songTitle
                     song["displaySubtitle"] = songArtist
-                    song["displayDescription"] = songTitle
+                    song["displayDescription"] = songAlbum
                     song["extras"] = extras
                     songs.add(song)
                 } while (cursor.moveToNext())

@@ -1,4 +1,3 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:event_bus/event_bus.dart';
 
 ///
@@ -10,14 +9,4 @@ import 'package:event_bus/event_bus.dart';
 class EventBusUtil {
   // 单例
   static final instance = EventBus();
-}
-
-///
-/// 音乐查询事件
-///
-class MusicFindEvent {
-  // 歌数组
-  List<MediaItem> songs;
-
-  MusicFindEvent(this.songs);
 }

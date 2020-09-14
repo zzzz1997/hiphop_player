@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "_locale" : MessageLookupByLibrary.simpleMessage("en"),
-    "appName" : MessageLookupByLibrary.simpleMessage("FLUZZ"),
+    "appName" : MessageLookupByLibrary.simpleMessage("Hiphop Player"),
     "autoBySystem" : MessageLookupByLibrary.simpleMessage("Auto"),
     "colorTheme" : MessageLookupByLibrary.simpleMessage("Color Theme"),
     "darkMode" : MessageLookupByLibrary.simpleMessage("Dark Mode"),
@@ -30,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "font" : MessageLookupByLibrary.simpleMessage("Font"),
     "fontKuaiLe" : MessageLookupByLibrary.simpleMessage("ZCOOL KuaiLe"),
     "language" : MessageLookupByLibrary.simpleMessage("Language"),
-    "setting" : MessageLookupByLibrary.simpleMessage("Setting")
+    "setting" : MessageLookupByLibrary.simpleMessage("Setting"),
+    "songList" : MessageLookupByLibrary.simpleMessage("Song List")
   };
 }

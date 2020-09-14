@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
@@ -13,14 +15,13 @@ class IconFonts {
   static const String _fontFamily = 'fluzz';
 
   // fluzz图标
-  static const IconData fluzz = IconData(0xe6a7, fontFamily: _fontFamily);
+  static const IconData album = IconData(0xe609, fontFamily: _fontFamily);
 }
 
 ///
 /// 图片帮助类
 ///
 class ImageHelper {
-
   ///
   /// 图片链接
   ///
@@ -55,13 +56,28 @@ class ImageHelper {
   ///
   /// 本地资源图片
   ///
-  static Image assetImage(String name,
-      {double width, double height, BoxFit fit}) {
-    return Image.asset(
+  static ExtendedImage assetImage(String name,
+      {double width, double height, BoxFit fit, BoxShape shape}) {
+    return ExtendedImage.asset(
       image(name),
       width: width,
       height: height,
       fit: fit,
+      shape: shape,
+    );
+  }
+
+  ///
+  /// 文件图片
+  ///
+  static ExtendedImage fileImage(File file,
+      {double width, double height, BoxFit fit, BoxShape shape}) {
+    return ExtendedImage.file(
+      file,
+      width: width,
+      height: height,
+      fit: fit,
+      shape: shape,
     );
   }
 
@@ -79,4 +95,7 @@ class ImageHelper {
 class Style {
   // 灰色
   static const greyColor = Colors.grey;
+
+  // 分割线
+  static const dividerColor = Color(0xFFF1F1F1);
 }

@@ -18,7 +18,9 @@ class AudioPlayerTask extends BackgroundAudioTask {
 
   // List<MediaItem> get queue => _mediaLibrary.items;
   List<MediaItem> queue = [];
+
   int get index => _player.currentIndex;
+
   MediaItem get mediaItem => index == null ? null : queue[index];
 
   @override
@@ -29,7 +31,8 @@ class AudioPlayerTask extends BackgroundAudioTask {
     // final session = await AudioSession.instance;
     // await session.configure(AudioSessionConfiguration.speech());
     // Broadcast media item changes.
-    queue = (params['songs'] as List).map((e) => MediaItem.fromJson(e)).toList();
+    queue =
+        (params['songs'] as List).map((e) => MediaItem.fromJson(e)).toList();
     _player.currentIndexStream.listen((index) {
       if (index != null) AudioServiceBackground.setMediaItem(queue[index]);
     });
@@ -41,12 +44,12 @@ class AudioPlayerTask extends BackgroundAudioTask {
     _player.processingStateStream.listen((state) {
       switch (state) {
         case ProcessingState.completed:
-        // In this example, the service stops when reaching the end.
+          // In this example, the service stops when reaching the end.
           onStop();
           break;
         case ProcessingState.ready:
-        // If we just came from skipping between tracks, clear the skip
-        // state now that we're ready to play.
+          // If we just came from skipping between tracks, clear the skip
+          // state now that we're ready to play.
           _skipState = null;
           break;
         default:
@@ -59,7 +62,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
     try {
       await _player.load(ConcatenatingAudioSource(
         children:
-        queue.map((item) => AudioSource.uri(Uri.parse(item.id))).toList(),
+            queue.map((item) => AudioSource.uri(Uri.parse(item.id))).toList(),
       ));
       onPlay();
     } catch (e) {
@@ -181,11 +184,11 @@ class Seeker {
   bool _running = false;
 
   Seeker(
-      this.player,
-      this.positionInterval,
-      this.stepInterval,
-      this.mediaItem,
-      );
+    this.player,
+    this.positionInterval,
+    this.stepInterval,
+    this.mediaItem,
+  );
 
   start() async {
     _running = true;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hiphop_player/sqflite/sqflite.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,6 +38,7 @@ class Global {
   ///
   static init() async {
     sharedPreferences = await SharedPreferences.getInstance();
+    await SqfliteUtil.init();
   }
 
   ///
