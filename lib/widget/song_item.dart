@@ -34,18 +34,20 @@ class _SongItemState extends State<SongItem> {
       onTap: () async {
         var songs = widget.songs.sublist(widget.index) +
             widget.songs.sublist(0, widget.index);
-        if (!await AudioService.start(
-          backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
-          androidNotificationChannelName: 'aaaaa_dcsc',
-          // Enable this if you want the Android service to exit the foreground state on pause.
-          //androidStopForegroundOnPause: true,
-          androidNotificationColor: 0xFF2196f3,
-          androidNotificationIcon: 'mipmap/ic_launcher',
-          androidEnableQueue: true,
-          params: {
-            'songs': songs.map((e) => e.toJson()).toList(),
-          },
-        )) {
+        if (!AudioService.running) {
+          await AudioService.start(
+            backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
+            androidNotificationChannelName: 'hiphop_player',
+            // Enable this if you want the Android service to exit the foreground state on pause.
+            //androidStopForegroundOnPause: true,
+            // androidNotificationColor: 0xFF2196f3,
+            androidNotificationIcon: 'mipmap/ic_launcher',
+            androidEnableQueue: true,
+            params: {
+              'songs': songs.map((e) => e.toJson()).toList(),
+            },
+          );
+        } else {
           AudioService.updateQueue(songs);
         }
       },
@@ -80,6 +82,9 @@ class _SongItemState extends State<SongItem> {
   }
 }
 
+///
+/// 音乐播放任务
+///
 _audioPlayerTaskEntrypoint() async {
   AudioServiceBackground.run(() => AudioPlayerTask());
 }

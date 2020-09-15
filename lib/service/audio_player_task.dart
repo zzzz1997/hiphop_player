@@ -11,13 +11,13 @@ import 'package:just_audio/just_audio.dart';
 ///
 class AudioPlayerTask extends BackgroundAudioTask {
   // final _mediaLibrary = MediaLibrary();
-  AudioPlayer _player = new AudioPlayer();
+  var _player = AudioPlayer();
   AudioProcessingState _skipState;
   Seeker _seeker;
   StreamSubscription<PlaybackEvent> _eventSubscription;
 
   // List<MediaItem> get queue => _mediaLibrary.items;
-  List<MediaItem> queue = [];
+  var queue = List<MediaItem>();
 
   int get index => _player.currentIndex;
 
@@ -57,18 +57,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
       }
     });
 
-    // Load and broadcast the queue
-    AudioServiceBackground.setQueue(queue);
-    try {
-      await _player.load(ConcatenatingAudioSource(
-        children:
-            queue.map((item) => AudioSource.uri(Uri.parse(item.id))).toList(),
-      ));
-      onPlay();
-    } catch (e) {
-      print("Error: $e");
-      onStop();
-    }
+    onUpdateQueue(queue);
   }
 
   @override
@@ -101,6 +90,25 @@ class AudioPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onSeekBackward(bool begin) async => _seekContinuously(begin, -1);
+
+  @override
+  Future<void> onUpdateQueue(List<MediaItem> queue) async {
+    onPause();
+    this.queue = queue;
+    AudioServiceBackground.setQueue(queue);
+    AudioServiceBackground.setMediaItem(queue[0]);
+    try {
+      await _player.load(ConcatenatingAudioSource(
+        children: this
+            .queue
+            .map((item) => AudioSource.uri(Uri.parse(item.id)))
+            .toList(),
+      ));
+      onPlay();
+    } catch (e) {
+      onStop();
+    }
+  }
 
   @override
   Future<void> onStop() async {

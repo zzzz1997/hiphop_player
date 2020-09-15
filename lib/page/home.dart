@@ -1,15 +1,12 @@
 import 'dart:math';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hiphop_player/sqflite/provider/music_item.dart';
 import 'package:hiphop_player/sqflite/sqflite.dart';
-import 'package:hiphop_player/util/music_finder.dart';
 import 'package:hiphop_player/widget/player_bar.dart';
-import 'package:hiphop_player/widget/song_item.dart';
 import 'package:provider/provider.dart';
 
 import '../common/global.dart';
@@ -32,9 +29,6 @@ class HomePage extends StatefulWidget {
 /// 主页面状态
 ///
 class _HomePageState extends State<HomePage> {
-  // 音乐列表
-  var _songs = List<MediaItem>();
-
   // 数量
   var _count = 0;
 
@@ -44,12 +38,8 @@ class _HomePageState extends State<HomePage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       EasyLoading.show();
-      _songs = await MusicItemProvider.queryAll();
       _count = await MusicItemProvider.count();
-      if (_songs.isNotEmpty) {
-        _songs.forEach((e) {
-          print(e.toJson());
-        });
+      if (_count > 0) {
         setState(() {});
       }
       EasyLoading.dismiss();
@@ -63,28 +53,60 @@ class _HomePageState extends State<HomePage> {
         title: Text(Global.s.appName),
       ),
       body: ListTileTheme(
-        contentPadding: EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: 30,
         ),
         child: Column(
           children: <Widget>[
-            FlatButton(
-              child: Text('找歌$_count'),
-              onPressed: () async {
-                EasyLoading.show();
-                _songs = await MusicUtil.findSongs();
-                if (_songs.isNotEmpty) {
-                  setState(() {});
-                  MusicItemProvider.insertList(_songs);
-                }
-                EasyLoading.dismiss();
-              },
-            ),
-
             Expanded(
-              child: ListView.builder(
-                itemBuilder: (_, i) => SongItem(_songs, i),
-                itemCount: _songs.length,
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            MyRoute.pushNamed(MyRoute.list);
+                          },
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.music_note,
+                                color: Theme.of(context).accentColor,
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '音乐',
+                                  children: <InlineSpan>[
+                                    TextSpan(
+                                      text: '($_count)',
+                                      style: TextStyle(
+                                        color: Global.brightnessColor(
+                                          context,
+                                          light: Style.greyColor,
+                                        ),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      const Spacer(),
+                    ],
+                  ),
+                ],
               ),
             ),
             PlayerBar(),
@@ -95,8 +117,8 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text(r'BO$$X'),
-              accountEmail: Text('CDC 说唱会馆'),
+              accountName: const Text(r'BO$$X'),
+              accountEmail: const Text('CDC 说唱会馆'),
               currentAccountPicture: CircleAvatar(
                 backgroundImage:
                     ImageHelper.assetImageProvider('im_avatar.jpg'),
@@ -112,7 +134,7 @@ class _HomePageState extends State<HomePage> {
               ),
               title: Text(Global.s.setting),
             ),
-            Spacer(),
+            const Spacer(),
             Row(
               children: [
                 Expanded(

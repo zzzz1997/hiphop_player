@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hiphop_player/common/global.dart';
 import 'package:hiphop_player/common/resource.dart';
+import 'package:hiphop_player/widget/play_button.dart';
 import 'package:rxdart/rxdart.dart';
 
 ///
@@ -52,7 +54,8 @@ class _PlayerBarState extends State<PlayerBar> {
         stream: _screenStateStream,
         builder: (_, snapshot) {
           var song = snapshot.data?.mediaItem ??
-              MediaItem(id: '', album: '', title: '暂无播放', artist: '未知歌手');
+              MediaItem(
+                  id: '', album: '', title: '暂无播放', artist: '未知歌手', artUri: '');
           var isPlaying = snapshot.data?.playbackState?.playing ?? false;
           return Row(
             children: [
@@ -60,11 +63,24 @@ class _PlayerBarState extends State<PlayerBar> {
                 width: 10,
               ),
               song.id.isNotEmpty
-                  ? ImageHelper.fileImage(
+                  ? ExtendedImage.file(
                       File.fromUri(Uri.parse(song.artUri)),
                       width: 32,
                       height: 32,
                       shape: BoxShape.circle,
+                      enableLoadState: true,
+                      loadStateChanged: (state) {
+                        print(state.extendedImageLoadState);
+                        if (state.extendedImageLoadState ==
+                            LoadState.completed) {
+                          return state.completedWidget;
+                        } else {
+                          return Icon(
+                            IconFonts.album,
+                            size: 32,
+                          );
+                        }
+                      },
                     )
                   : Icon(
                       IconFonts.album,
@@ -86,6 +102,8 @@ class _PlayerBarState extends State<PlayerBar> {
                     ),
                     Text(
                       song.artist,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Global.brightnessColor(context,
                             light: Style.greyColor),
@@ -122,6 +140,7 @@ class _PlayerBarState extends State<PlayerBar> {
                   size: 32,
                 ),
               ),
+              PlayButton(),
               SizedBox(
                 width: 10,
               ),

@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../common/global.dart';
 import '../page/home.dart';
-import '../page/splash.dart';
+import '../page/list.dart';
 import '../page/setting.dart';
+import '../page/splash.dart';
 
 ///
 /// 动画类型
@@ -33,6 +34,9 @@ class MyRoute {
 
   // 主页路由
   static const home = 'home';
+
+  // 列表路由
+  static const list = 'list';
 
   // 设置路由
   static const setting = 'setting';
@@ -132,6 +136,8 @@ class MyRoute {
         return SplashPage();
       case home:
         return AudioServiceWidget(child: HomePage());
+      case list:
+        return AudioServiceWidget(child: ListPage());
       case setting:
         return SettingPage();
       default:
