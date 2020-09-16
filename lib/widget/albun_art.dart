@@ -1,71 +1,78 @@
-import 'dart:math';
 import 'dart:io';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hiphop_player/common/resource.dart';
 
 ///
-/// 专辑封面组件
+/// 动态专辑封面组件
 ///
 /// @author zzzz1997
 /// @created_time 20200915
 ///
-class AlbumArt extends StatefulWidget {
+class AnimateAlbumArt extends StatefulWidget {
   // 专辑封面
   final String albumArt;
+
+  // 是否在播放
+  final bool isPlaying;
 
   // 图片大小
   final double size;
 
-  AlbumArt(this.albumArt, {this.size = 32});
+  AnimateAlbumArt(this.albumArt, this.isPlaying, {this.size = 32});
 
   @override
-  _AlbumArtState createState() => _AlbumArtState();
+  _AnimateAlbumArtState createState() => _AnimateAlbumArtState();
 }
 
 ///
 /// 专辑封面组件状态
 ///
-class _AlbumArtState extends State<AlbumArt>
+class _AnimateAlbumArtState extends State<AnimateAlbumArt>
     with SingleTickerProviderStateMixin {
   // 动画控制器
   AnimationController _controller;
-
-  // 动画
-  Animation _animation;
 
   @override
   void initState() {
     super.initState();
 
     _controller =
-        AnimationController(duration: const Duration(seconds: 60), vsync: this);
-    _animation = Tween(begin: 0.0, end: 2 * pi).animate(_controller);
+        AnimationController(duration: const Duration(seconds: 20), vsync: this);
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _controller.reset();
         _controller.forward();
       }
     });
-    _controller.forward();
+    if (widget.isPlaying) {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(AnimateAlbumArt oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.albumArt != widget.albumArt) {
+      setState(() {});
+    }
+    if (oldWidget.isPlaying != widget.isPlaying) {
+      if (widget.isPlaying) {
+        _controller.forward();
+      } else {
+        _controller.stop();
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return RotationTransition(
-      turns: _animation,
+      turns: _controller,
       alignment: Alignment.center,
-      child: widget.albumArt.isNotEmpty
-          ? ImageHelper.fileImage(
-              File.fromUri(Uri.parse(widget.albumArt)),
-              width: 32,
-              height: 32,
-              shape: BoxShape.circle,
-            )
-          : Icon(
-              IconFonts.album,
-              size: 32,
-            ),
+      child: AlbumArt(widget.albumArt, size: widget.size),
     );
   }
 
@@ -73,5 +80,48 @@ class _AlbumArtState extends State<AlbumArt>
   void dispose() {
     _controller?.dispose();
     super.dispose();
+  }
+}
+
+///
+/// 专辑封面
+///
+class AlbumArt extends StatelessWidget {
+  // 专辑封面
+  final String albumArt;
+
+  // 图片大小
+  final double size;
+
+  // 形状
+  final BoxShape shape;
+
+  AlbumArt(this.albumArt, {this.size = 32, this.shape = BoxShape.circle});
+
+  @override
+  Widget build(BuildContext context) {
+    return albumArt.isNotEmpty
+        ? ExtendedImage.file(
+            File.fromUri(Uri.parse(albumArt)),
+            width: size,
+            height: size,
+            shape: shape,
+            enableLoadState: true,
+            fit: BoxFit.cover,
+            loadStateChanged: (state) {
+              if (state.extendedImageLoadState == LoadState.completed) {
+                return state.completedWidget;
+              } else {
+                return Icon(
+                  IconFonts.album,
+                  size: size,
+                );
+              }
+            },
+          )
+        : Icon(
+            IconFonts.album,
+            size: size,
+          );
   }
 }

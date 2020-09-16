@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../common/global.dart';
-import '../common/resource.dart';
-import '../common/route.dart';
+import 'package:hiphop_player/common/global.dart';
+import 'package:hiphop_player/common/resource.dart';
+import 'package:hiphop_player/common/route.dart';
 
 ///
 /// 开屏页面

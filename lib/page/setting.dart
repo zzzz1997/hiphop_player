@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../common/global.dart';
-import '../model/locale.dart';
-import '../model/theme.dart';
+import 'package:hiphop_player/common/global.dart';
+import 'package:hiphop_player/model/locale.dart';
+import 'package:hiphop_player/model/theme.dart';
 
 ///
 /// 设置页面

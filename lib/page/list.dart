@@ -41,55 +41,57 @@ class _ListPageState extends State<ListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(Global.s.songList),
-      ),
-      body: Column(
-        children: [
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              if (_songs.isNotEmpty) {
-                AudioService.updateQueue(_songs);
-              }
-            },
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 0, 5),
-              child: Row(
-                children: <Widget>[
-                  const Icon(Icons.play_circle_outline),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  const Text('全部播放'),
-                ],
+    return AudioServiceWidget(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(Global.s.songList),
+        ),
+        body: Column(
+          children: [
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                if (_songs.isNotEmpty) {
+                  AudioService.updateQueue(_songs);
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                child: Row(
+                  children: <Widget>[
+                    const Icon(Icons.play_circle_outline),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    const Text('全部播放'),
+                  ],
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: _songs.isEmpty
-                ? Center(
-                    child: FlatButton(
-                      child: const Text('暂无歌曲，搜索本地'),
-                      onPressed: () async {
-                        EasyLoading.show();
-                        _songs = await MusicUtil.findSongs();
-                        if (_songs.isNotEmpty) {
-                          setState(() {});
-                          MusicItemProvider.insertList(_songs);
-                        }
-                        EasyLoading.dismiss();
-                      },
+            Expanded(
+              child: _songs.isEmpty
+                  ? Center(
+                      child: FlatButton(
+                        child: const Text('暂无歌曲，搜索本地'),
+                        onPressed: () async {
+                          EasyLoading.show();
+                          _songs = await MusicUtil.findSongs();
+                          if (_songs.isNotEmpty) {
+                            setState(() {});
+                            MusicItemProvider.insertList(_songs);
+                          }
+                          EasyLoading.dismiss();
+                        },
+                      ),
+                    )
+                  : ListView.builder(
+                      itemBuilder: (_, i) => SongItem(_songs, i),
+                      itemCount: _songs.length,
                     ),
-                  )
-                : ListView.builder(
-                    itemBuilder: (_, i) => SongItem(_songs, i),
-                    itemCount: _songs.length,
-                  ),
-          ),
-          PlayerBar(),
-        ],
+            ),
+            PlayerBar(),
+          ],
+        ),
       ),
     );
   }

@@ -4,15 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hiphop_player/common/global.dart';
+import 'package:hiphop_player/common/resource.dart';
+import 'package:hiphop_player/common/route.dart';
+import 'package:hiphop_player/model/theme.dart';
 import 'package:hiphop_player/sqflite/provider/music_item.dart';
 import 'package:hiphop_player/sqflite/sqflite.dart';
 import 'package:hiphop_player/widget/player_bar.dart';
 import 'package:provider/provider.dart';
-
-import '../common/global.dart';
-import '../common/resource.dart';
-import '../common/route.dart';
-import '../model/theme.dart';
 
 ///
 /// 主页面

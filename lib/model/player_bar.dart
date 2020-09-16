@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../common/global.dart';
+import 'package:hiphop_player/common/global.dart';
 
 ///
 /// 播放栏模型

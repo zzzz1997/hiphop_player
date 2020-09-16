@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hiphop_player/generated/l10n.dart';
 import 'package:hiphop_player/sqflite/sqflite.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../generated/l10n.dart';
 
 ///
 /// 全局参数
@@ -32,6 +31,12 @@ class Global {
 
   // SharedPreferences对象
   static SharedPreferences sharedPreferences;
+
+  // 随机模式键
+  static const kShuffleMode = 'kShuffleMode';
+
+  // 重复模式键
+  static const kRepeatMode = 'kRepeatMode';
 
   ///
   /// 初始化

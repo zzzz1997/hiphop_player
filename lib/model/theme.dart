@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../common/global.dart';
+import 'package:hiphop_player/common/global.dart';
 
 ///
 /// 主题模型

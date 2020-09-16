@@ -1,12 +1,12 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../common/global.dart';
-import '../page/home.dart';
-import '../page/list.dart';
-import '../page/setting.dart';
-import '../page/splash.dart';
+import 'package:hiphop_player/common/global.dart';
+import 'package:hiphop_player/page/detail.dart';
+import 'package:hiphop_player/page/home.dart';
+import 'package:hiphop_player/page/list.dart';
+import 'package:hiphop_player/page/setting.dart';
+import 'package:hiphop_player/page/splash.dart';
 
 ///
 /// 动画类型
@@ -19,7 +19,13 @@ enum AnimationType {
   // Android质感
   MATERIAL,
   // IOS风格
-  CUPERTINO
+  CUPERTINO,
+  // 从左进入
+  IN_FROM_LEFT,
+  // 从右进入
+  IN_FROM_RIGHT,
+  // 从底进入
+  IN_FROM_BOTTOM
 }
 
 ///
@@ -33,10 +39,13 @@ class MyRoute {
   static const splash = 'splash';
 
   // 主页路由
-  static const home = 'home';
+  static const home = '/';
 
   // 列表路由
   static const list = 'list';
+
+  // 详情路由
+  static const detail = 'detail';
 
   // 设置路由
   static const setting = 'setting';
@@ -45,11 +54,12 @@ class MyRoute {
   /// 构造路由
   ///
   static Route generateRoute(RouteSettings settings) {
-    Map map = settings.arguments;
-    AnimationType routeType = map != null
-        ? map['routeType'] ?? AnimationType.NO_ANIM
+    Map arguments = settings.arguments;
+    AnimationType animationType = arguments != null
+        ? arguments['animationType'] ?? AnimationType.NO_ANIM
         : AnimationType.NO_ANIM;
-    switch (routeType) {
+    Map map = arguments != null ? arguments['arguments'] : {};
+    switch (animationType) {
       case AnimationType.NO_ANIM:
         return PageRouteBuilder(
           opaque: false,
@@ -60,7 +70,6 @@ class MyRoute {
       case AnimationType.FADE_IN:
         return PageRouteBuilder(
           pageBuilder: (_, __, ___) => _buildPage(settings.name, map),
-          transitionDuration: Duration(milliseconds: 500),
           transitionsBuilder: (_, animation, __, child) => FadeTransition(
             opacity: Tween(begin: 0.1, end: 1.0).animate(
               CurvedAnimation(
@@ -79,11 +88,34 @@ class MyRoute {
         return CupertinoPageRoute(
           builder: (context) => _buildPage(settings.name, map),
         );
+      case AnimationType.IN_FROM_LEFT:
+      case AnimationType.IN_FROM_RIGHT:
+      case AnimationType.IN_FROM_BOTTOM:
+        const Offset topLeft = Offset(0.0, 0.0);
+        const Offset topRight = Offset(1.0, 0.0);
+        const Offset bottomLeft = Offset(0.0, 1.0);
+        Offset startOffset = bottomLeft;
+        Offset endOffset = topLeft;
+        if (animationType == AnimationType.IN_FROM_LEFT) {
+          startOffset = Offset(-1.0, 0.0);
+          endOffset = topLeft;
+        } else if (animationType == AnimationType.IN_FROM_RIGHT) {
+          startOffset = topRight;
+          endOffset = topLeft;
+        }
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => _buildPage(settings.name, map),
+          transitionsBuilder: (_, animation, __, child) => SlideTransition(
+            position: Tween<Offset>(begin: startOffset, end: endOffset)
+                .animate(animation),
+            child: child,
+          ),
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
             body: Center(
-              child: Text('No route defined for $routeType'),
+              child: Text('No route defined for $animationType'),
             ),
           ),
         );
@@ -94,9 +126,9 @@ class MyRoute {
   /// 根据名称跳转
   ///
   static Future<T> pushNamed<T>(String routeName,
-      {AnimationType routeType, Object arguments}) {
+      {AnimationType animationType, Object arguments}) {
     return Global.navigator.pushNamed<T>(routeName,
-        arguments: _combineArguments(routeType, arguments));
+        arguments: _combineArguments(animationType, arguments));
   }
 
   ///
@@ -104,40 +136,42 @@ class MyRoute {
   ///
   static Future<T> pushNamedAndRemoveUntil<T>(
       String routeName, RoutePredicate predicate,
-      {AnimationType routeType, Object arguments}) {
+      {AnimationType animationType, Object arguments}) {
     return Global.navigator.pushNamedAndRemoveUntil<T>(routeName, predicate,
-        arguments: _combineArguments(routeType, arguments));
+        arguments: _combineArguments(animationType, arguments));
   }
 
   ///
   /// 根据名称跳转替换当前页面
   ///
   static Future<T> pushReplacementNamed<T, TO>(String routeName,
-      {AnimationType routeType, TO result, Object arguments}) {
+      {AnimationType animationType, TO result, Object arguments}) {
     return Global.navigator.pushReplacementNamed<T, TO>(routeName,
-        result: result, arguments: _combineArguments(routeType, arguments));
+        result: result, arguments: _combineArguments(animationType, arguments));
   }
 
   ///
   /// 根据名称跳转并退出当前页面
   ///
   static Future<T> popAndPushNamed<T, TO>(String routeName,
-      {AnimationType routeType, TO result, Object arguments}) {
+      {AnimationType animationType, TO result, Object arguments}) {
     return Global.navigator.popAndPushNamed<T, TO>(routeName,
-        result: result, arguments: _combineArguments(routeType, arguments));
+        result: result, arguments: _combineArguments(animationType, arguments));
   }
 
   ///
   /// 构建页面
   ///
-  static Widget _buildPage(String name, Map<String, Object> map) {
+  static Widget _buildPage(String name, Map map) {
     switch (name) {
       case splash:
         return SplashPage();
       case home:
         return AudioServiceWidget(child: HomePage());
       case list:
-        return AudioServiceWidget(child: ListPage());
+        return ListPage();
+      case detail:
+        return AudioServiceWidget(child: DetailPage(map['albumArt']));
       case setting:
         return SettingPage();
       default:
@@ -152,9 +186,10 @@ class MyRoute {
   ///
   /// 组合参数
   ///
-  static Object _combineArguments(AnimationType routeType, Object arguments) {
+  static Object _combineArguments(
+      AnimationType animationType, Object arguments) {
     return {
-      'routeType': routeType ?? AnimationType.MATERIAL,
+      'animationType': animationType ?? AnimationType.MATERIAL,
       'arguments': arguments,
     };
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../model/common.dart';
+import 'package:hiphop_player/model/common.dart';
 
 ///
 /// 加载数据方法

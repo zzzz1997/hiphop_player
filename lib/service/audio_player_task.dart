@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:hiphop_player/common/global.dart';
 import 'package:just_audio/just_audio.dart';
 
 ///
@@ -56,7 +57,10 @@ class AudioPlayerTask extends BackgroundAudioTask {
           break;
       }
     });
-
+    AudioService.setShuffleMode(AudioServiceShuffleMode
+        .values[Global.sharedPreferences.getInt(Global.kShuffleMode) ?? 0]);
+    AudioService.setRepeatMode(AudioServiceRepeatMode
+        .values[Global.sharedPreferences.getInt(Global.kRepeatMode) ?? 2]);
     onUpdateQueue(queue);
   }
 
@@ -108,6 +112,22 @@ class AudioPlayerTask extends BackgroundAudioTask {
     } catch (e) {
       onStop();
     }
+  }
+
+  @override
+  Future<void> onSetShuffleMode(AudioServiceShuffleMode shuffleMode) {
+    _player.setShuffleModeEnabled(shuffleMode == AudioServiceShuffleMode.all);
+    return super.onSetShuffleMode(shuffleMode);
+  }
+
+  @override
+  Future<void> onSetRepeatMode(AudioServiceRepeatMode repeatMode) {
+    _player.setLoopMode(repeatMode == AudioServiceRepeatMode.none
+        ? LoopMode.off
+        : repeatMode == AudioServiceRepeatMode.all
+            ? LoopMode.all
+            : LoopMode.one);
+    return super.onSetRepeatMode(repeatMode);
   }
 
   @override
