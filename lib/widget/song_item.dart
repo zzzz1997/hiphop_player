@@ -45,6 +45,10 @@ class _SongItemState extends State<SongItem> {
             androidEnableQueue: true,
             params: {
               'songs': songs.map((e) => e.toJson()).toList(),
+              'shuffleMode':
+                  Global.sharedPreferences.getInt(Global.kShuffleMode) ?? 0,
+              'repeatMode':
+                  Global.sharedPreferences.getInt(Global.kRepeatMode) ?? 2,
             },
           );
         } else {

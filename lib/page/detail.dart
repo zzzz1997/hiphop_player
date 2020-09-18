@@ -115,8 +115,6 @@ class _DetailPageState extends State<DetailPage> {
                           var duration = snapshot
                                   .data?.mediaItem?.duration?.inMilliseconds ??
                               1;
-                          print(snapshot.data?.playbackState?.shuffleMode);
-                          print(snapshot.data?.playbackState?.repeatMode);
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -157,9 +155,14 @@ class _DetailPageState extends State<DetailPage> {
                             if (repeatMode == AudioServiceRepeatMode.all) {
                               AudioService.setShuffleMode(
                                   AudioServiceShuffleMode.all);
+                              AudioService.setRepeatMode(
+                                  AudioServiceRepeatMode.none);
                               Global.sharedPreferences.setInt(
                                   Global.kShuffleMode,
                                   AudioServiceShuffleMode.all.index);
+                              Global.sharedPreferences.setInt(
+                                  Global.kRepeatMode,
+                                  AudioServiceRepeatMode.none.index);
                             } else if (shuffleMode ==
                                 AudioServiceShuffleMode.all) {
                               AudioService.setShuffleMode(

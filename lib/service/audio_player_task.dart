@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:hiphop_player/common/global.dart';
 import 'package:just_audio/just_audio.dart';
 
 ///
@@ -23,6 +22,12 @@ class AudioPlayerTask extends BackgroundAudioTask {
   int get index => _player.currentIndex;
 
   MediaItem get mediaItem => index == null ? null : queue[index];
+
+  // 随机模式
+  AudioServiceShuffleMode _shuffleMode;
+
+  // 循环模式
+  AudioServiceRepeatMode _repeatMode;
 
   @override
   Future<void> onStart(Map<String, dynamic> params) async {
@@ -57,11 +62,9 @@ class AudioPlayerTask extends BackgroundAudioTask {
           break;
       }
     });
-    AudioService.setShuffleMode(AudioServiceShuffleMode
-        .values[Global.sharedPreferences.getInt(Global.kShuffleMode) ?? 0]);
-    AudioService.setRepeatMode(AudioServiceRepeatMode
-        .values[Global.sharedPreferences.getInt(Global.kRepeatMode) ?? 2]);
     onUpdateQueue(queue);
+    _shuffleMode = AudioServiceShuffleMode.values[params['shuffleMode']];
+    _repeatMode = AudioServiceRepeatMode.values[params['repeatMode']];
   }
 
   @override
@@ -101,6 +104,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
     this.queue = queue;
     AudioServiceBackground.setQueue(queue);
     AudioServiceBackground.setMediaItem(queue[0]);
+    print('onUpdateQueue');
     try {
       await _player.load(ConcatenatingAudioSource(
         children: this
@@ -116,17 +120,15 @@ class AudioPlayerTask extends BackgroundAudioTask {
 
   @override
   Future<void> onSetShuffleMode(AudioServiceShuffleMode shuffleMode) {
-    _player.setShuffleModeEnabled(shuffleMode == AudioServiceShuffleMode.all);
+    _shuffleMode = shuffleMode;
+    _broadcastState();
     return super.onSetShuffleMode(shuffleMode);
   }
 
   @override
   Future<void> onSetRepeatMode(AudioServiceRepeatMode repeatMode) {
-    _player.setLoopMode(repeatMode == AudioServiceRepeatMode.none
-        ? LoopMode.off
-        : repeatMode == AudioServiceRepeatMode.all
-            ? LoopMode.all
-            : LoopMode.one);
+    _repeatMode = repeatMode;
+    _broadcastState();
     return super.onSetRepeatMode(repeatMode);
   }
 
@@ -180,6 +182,8 @@ class AudioPlayerTask extends BackgroundAudioTask {
       position: _player.position,
       bufferedPosition: _player.bufferedPosition,
       speed: _player.speed,
+      shuffleMode: _shuffleMode,
+      repeatMode: _repeatMode,
     );
   }
 
