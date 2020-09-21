@@ -50,9 +50,11 @@ class _ListPageState extends State<ListPage> {
           children: [
             GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () {
+              onTap: () async {
                 if (_songs.isNotEmpty) {
-                  AudioService.updateQueue(_songs);
+                  await AudioService.updateQueue(_songs);
+                  await AudioService.skipToQueueItem(_songs[0].id);
+                  await AudioService.play();
                 }
               },
               child: Padding(

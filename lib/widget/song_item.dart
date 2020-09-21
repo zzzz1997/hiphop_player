@@ -2,7 +2,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hiphop_player/common/global.dart';
 import 'package:hiphop_player/common/resource.dart';
-import 'package:hiphop_player/service/audio_player_task.dart';
 
 ///
 /// 歌单元组件
@@ -34,26 +33,9 @@ class _SongItemState extends State<SongItem> {
       onTap: () async {
         var songs = widget.songs.sublist(widget.index) +
             widget.songs.sublist(0, widget.index);
-        if (!AudioService.running) {
-          await AudioService.start(
-            backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
-            androidNotificationChannelName: 'hiphop_player',
-            // Enable this if you want the Android service to exit the foreground state on pause.
-            //androidStopForegroundOnPause: true,
-            // androidNotificationColor: 0xFF2196f3,
-            androidNotificationIcon: 'mipmap/ic_launcher',
-            androidEnableQueue: true,
-            params: {
-              'songs': songs.map((e) => e.toJson()).toList(),
-              'shuffleMode':
-                  Global.sharedPreferences.getInt(Global.kShuffleMode) ?? 0,
-              'repeatMode':
-                  Global.sharedPreferences.getInt(Global.kRepeatMode) ?? 2,
-            },
-          );
-        } else {
-          AudioService.updateQueue(songs);
-        }
+        await AudioService.updateQueue(songs);
+        await AudioService.skipToQueueItem(songs[0].id);
+        await AudioService.play();
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -84,11 +66,4 @@ class _SongItemState extends State<SongItem> {
       ),
     );
   }
-}
-
-///
-/// 音乐播放任务
-///
-_audioPlayerTaskEntrypoint() async {
-  AudioServiceBackground.run(() => AudioPlayerTask());
 }

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import 'package:hiphop_player/common/global.dart';
 import 'package:hiphop_player/common/resource.dart';
 import 'package:hiphop_player/common/route.dart';
 import 'package:hiphop_player/model/theme.dart';
+import 'package:hiphop_player/service/audio_player_task.dart';
 import 'package:hiphop_player/sqflite/provider/music_item.dart';
 import 'package:hiphop_player/sqflite/sqflite.dart';
 import 'package:hiphop_player/widget/player_bar.dart';
@@ -35,6 +37,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
+    AudioService.start(
+      backgroundTaskEntrypoint: _audioPlayerTaskEntrypoint,
+      androidNotificationChannelName: 'hiphop_player',
+      // Enable this if you want the Android service to exit the foreground state on pause.
+      //androidStopForegroundOnPause: true,
+      // androidNotificationColor: 0xFF2196f3,
+      androidNotificationIcon: 'mipmap/ic_launcher',
+      androidEnableQueue: true,
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       EasyLoading.show();
       _count = await MusicItemProvider.count();
@@ -187,4 +198,11 @@ class _HomePageState extends State<HomePage> {
       );
     }
   }
+}
+
+///
+/// 音乐播放任务
+///
+_audioPlayerTaskEntrypoint() async {
+  AudioServiceBackground.run(() => AudioPlayerTask());
 }

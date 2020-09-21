@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:hiphop_player/common/global.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 ///
 /// 音频播放器任务
@@ -29,6 +32,9 @@ class AudioPlayerTask extends BackgroundAudioTask {
   // 循环模式
   AudioServiceRepeatMode _repeatMode;
 
+  // 偏好设置
+  SharedPreferences _sharedPreferences;
+
   @override
   Future<void> onStart(Map<String, dynamic> params) async {
     // We configure the audio session for speech since we're playing a podcast.
@@ -37,10 +43,17 @@ class AudioPlayerTask extends BackgroundAudioTask {
     // final session = await AudioSession.instance;
     // await session.configure(AudioSessionConfiguration.speech());
     // Broadcast media item changes.
-    queue =
-        (params['songs'] as List).map((e) => MediaItem.fromJson(e)).toList();
+    _sharedPreferences = await SharedPreferences.getInstance();
+    queue = _sharedPreferences
+        .getStringList(Global.kSongList)
+        .map((e) => MediaItem.fromJson(jsonDecode(e)))
+        .toList();
     _player.currentIndexStream.listen((index) {
-      if (index != null) AudioServiceBackground.setMediaItem(queue[index]);
+      if (index != null) {
+        AudioServiceBackground.setMediaItem(queue[index]);
+        _sharedPreferences.setInt(Global.kSongIndex, index);
+        _sharedPreferences.setInt(Global.kSongPosition, 0);
+      }
     });
     // Propagate all events from the audio player to AudioService clients.
     _eventSubscription = _player.playbackEventStream.listen((event) {
@@ -62,9 +75,17 @@ class AudioPlayerTask extends BackgroundAudioTask {
           break;
       }
     });
-    onUpdateQueue(queue);
-    _shuffleMode = AudioServiceShuffleMode.values[params['shuffleMode']];
-    _repeatMode = AudioServiceRepeatMode.values[params['repeatMode']];
+    _shuffleMode = AudioServiceShuffleMode
+        .values[_sharedPreferences.getInt(Global.kShuffleMode) ?? 0];
+    _repeatMode = AudioServiceRepeatMode
+        .values[_sharedPreferences.getInt(Global.kRepeatMode) ?? 2];
+    await onUpdateQueue(queue);
+    await AudioServiceBackground.setMediaItem(
+        queue[_sharedPreferences.getInt(Global.kSongIndex)]);
+    onSeekTo(Duration(
+        milliseconds: _sharedPreferences.getInt(Global.kSongPosition)));
+    onSetShuffleMode(_shuffleMode);
+    onSetRepeatMode(_repeatMode);
   }
 
   @override
@@ -81,10 +102,17 @@ class AudioPlayerTask extends BackgroundAudioTask {
   Future<void> onPlay() => _player.play();
 
   @override
-  Future<void> onPause() => _player.pause();
+  Future<void> onPause() {
+    _sharedPreferences.setInt(
+        Global.kSongPosition, _player.position.inMilliseconds);
+    return _player.pause();
+  }
 
   @override
-  Future<void> onSeekTo(Duration position) => _player.seek(position);
+  Future<void> onSeekTo(Duration position) {
+    _sharedPreferences.setInt(Global.kSongPosition, position.inMilliseconds);
+    return _player.seek(position);
+  }
 
   @override
   Future<void> onFastForward() => _seekRelative(fastForwardInterval);
@@ -103,8 +131,6 @@ class AudioPlayerTask extends BackgroundAudioTask {
     onPause();
     this.queue = queue;
     AudioServiceBackground.setQueue(queue);
-    AudioServiceBackground.setMediaItem(queue[0]);
-    print('onUpdateQueue');
     try {
       await _player.load(ConcatenatingAudioSource(
         children: this
@@ -112,15 +138,19 @@ class AudioPlayerTask extends BackgroundAudioTask {
             .map((item) => AudioSource.uri(Uri.parse(item.id)))
             .toList(),
       ));
-      onPlay();
     } catch (e) {
       onStop();
     }
+    _sharedPreferences.setStringList(Global.kSongList,
+        this.queue.map((e) => jsonEncode(e.toJson())).toList());
+    _sharedPreferences.setInt(Global.kSongIndex, 0);
+    _sharedPreferences.setInt(Global.kSongPosition, 0);
   }
 
   @override
   Future<void> onSetShuffleMode(AudioServiceShuffleMode shuffleMode) {
     _shuffleMode = shuffleMode;
+    _player.setShuffleModeEnabled(shuffleMode == AudioServiceShuffleMode.all);
     _broadcastState();
     return super.onSetShuffleMode(shuffleMode);
   }
@@ -128,6 +158,7 @@ class AudioPlayerTask extends BackgroundAudioTask {
   @override
   Future<void> onSetRepeatMode(AudioServiceRepeatMode repeatMode) {
     _repeatMode = repeatMode;
+    _player.setLoopMode(LoopMode.values[repeatMode.index]);
     _broadcastState();
     return super.onSetRepeatMode(repeatMode);
   }

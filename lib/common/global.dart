@@ -38,6 +38,15 @@ class Global {
   // 重复模式键
   static const kRepeatMode = 'kRepeatMode';
 
+  // 歌曲列表键
+  static const kSongList = 'kSongList';
+
+  // 歌曲索引键
+  static const kSongIndex = 'kSongIndex';
+
+  // 歌曲位置键
+  static const kSongPosition = 'kSongPosition';
+
   ///
   /// 初始化
   ///
