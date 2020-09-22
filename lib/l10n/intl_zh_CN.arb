@@ -9,5 +9,13 @@
   "autoBySystem": "跟随系统",
   "fontKuaiLe": "快乐字体",
   "language": "语言",
-  "exit": "退出"
+  "exit": "退出",
+  "music": "音乐",
+  "noSongs": "暂无歌曲，搜索本地",
+  "playAll": "全部播放",
+  "enterSongTitle": "请输入歌名",
+  "selectSong": "选择歌曲",
+  "multipleChoice": "多选",
+  "delete": "删除",
+  "currentPlay": "当前播放"
 }

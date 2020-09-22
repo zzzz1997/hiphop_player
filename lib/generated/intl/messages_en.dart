@@ -22,15 +22,23 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "_locale" : MessageLookupByLibrary.simpleMessage("en"),
-    "appName" : MessageLookupByLibrary.simpleMessage("Hiphop Player"),
+    "appName" : MessageLookupByLibrary.simpleMessage("Hiphop player"),
     "autoBySystem" : MessageLookupByLibrary.simpleMessage("Auto"),
-    "colorTheme" : MessageLookupByLibrary.simpleMessage("Color Theme"),
-    "darkMode" : MessageLookupByLibrary.simpleMessage("Dark Mode"),
+    "colorTheme" : MessageLookupByLibrary.simpleMessage("Color theme"),
+    "currentPlay" : MessageLookupByLibrary.simpleMessage("Current play"),
+    "darkMode" : MessageLookupByLibrary.simpleMessage("Dark mode"),
+    "delete" : MessageLookupByLibrary.simpleMessage("Delete"),
+    "enterSongTitle" : MessageLookupByLibrary.simpleMessage("Please enter the song title"),
     "exit" : MessageLookupByLibrary.simpleMessage("Exit"),
     "font" : MessageLookupByLibrary.simpleMessage("Font"),
     "fontKuaiLe" : MessageLookupByLibrary.simpleMessage("ZCOOL KuaiLe"),
     "language" : MessageLookupByLibrary.simpleMessage("Language"),
+    "multipleChoice" : MessageLookupByLibrary.simpleMessage("Multiple choice"),
+    "music" : MessageLookupByLibrary.simpleMessage("Music"),
+    "noSongs" : MessageLookupByLibrary.simpleMessage("No songs, search local"),
+    "playAll" : MessageLookupByLibrary.simpleMessage("Play all"),
+    "selectSong" : MessageLookupByLibrary.simpleMessage("Select song"),
     "setting" : MessageLookupByLibrary.simpleMessage("Setting"),
-    "songList" : MessageLookupByLibrary.simpleMessage("Song List")
+    "songList" : MessageLookupByLibrary.simpleMessage("Song list")
   };
 }

@@ -67,7 +67,7 @@ class MusicItemProvider {
     if (maps.length == 1) {
       var json = maps.first;
       json['extras'] = {'albumId': json['albumId']};
-      return MediaItem.fromJson(maps.first);
+      return MediaItem.fromJson(json);
     }
     return null;
   }

@@ -6,6 +6,7 @@ import 'package:hiphop_player/common/resource.dart';
 import 'package:hiphop_player/common/route.dart';
 import 'package:hiphop_player/widget/albun_art.dart';
 import 'package:hiphop_player/widget/play_button.dart';
+import 'package:hiphop_player/widget/play_list.dart';
 import 'package:rxdart/rxdart.dart';
 
 ///
@@ -26,7 +27,8 @@ class PlayerBar extends StatefulWidget {
           AudioService.currentMediaItemStream,
           AudioService.playbackStateStream,
           (queue, mediaItem, playbackState) =>
-              ScreenState(queue, mediaItem, playbackState));
+              ScreenState(queue, mediaItem, playbackState))
+        ..asBroadcastStream();
 }
 
 ///
@@ -53,7 +55,7 @@ class _PlayerBarState extends State<PlayerBar> {
       child: Container(
         height: 48,
         alignment: Alignment.center,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           border: Border(
             top: BorderSide(
               color: Style.dividerColor,
@@ -74,14 +76,14 @@ class _PlayerBarState extends State<PlayerBar> {
             _albumArt = song.artUri;
             return Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Hero(
                   tag: song.artUri,
                   child: AnimateAlbumArt(song.artUri, isPlaying),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
@@ -108,16 +110,7 @@ class _PlayerBarState extends State<PlayerBar> {
                     ],
                   ),
                 ),
-                StreamBuilder(
-                  stream: Stream.periodic(Duration(milliseconds: 200)),
-                  builder: (_, __) {
-                    var position =
-                        snapshot.data?.playbackState?.currentPosition ??
-                            Duration.zero;
-                    return Text(position.toString());
-                  },
-                ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 GestureDetector(
@@ -142,14 +135,19 @@ class _PlayerBarState extends State<PlayerBar> {
                     },
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
-                Icon(
-                  Icons.menu,
-                  size: 32,
+                IconButton(
+                  icon: const Icon(
+                    Icons.queue_music,
+                    size: 32,
+                  ),
+                  onPressed: () {
+                    showPlayList(context);
+                  },
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],

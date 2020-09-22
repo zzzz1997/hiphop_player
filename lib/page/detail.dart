@@ -5,6 +5,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hiphop_player/common/global.dart';
 import 'package:hiphop_player/widget/albun_art.dart';
+import 'package:hiphop_player/widget/play_list.dart';
 import 'package:hiphop_player/widget/player_bar.dart';
 
 ///
@@ -51,13 +52,13 @@ class _DetailPageState extends State<DetailPage> {
               children: [
                 Text(
                   song.title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                   ),
                 ),
                 Text(
                   song.artist,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 10,
                   ),
                 ),
@@ -98,16 +99,17 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                   ),
                   DefaultTextStyle(
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 20,
                       ),
                       child: StreamBuilder(
-                        stream: Stream.periodic(Duration(milliseconds: 200)),
+                        stream:
+                            Stream.periodic(const Duration(milliseconds: 200)),
                         builder: (_, __) {
                           var position = snapshot.data?.playbackState
                                   ?.currentPosition?.inMilliseconds ??
@@ -138,20 +140,26 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 40,
                   ),
                   IconTheme(
-                    data: IconThemeData(
+                    data: const IconThemeData(
                       color: Colors.white,
-                      size: 32,
                     ),
                     child: Row(
                       children: [
-                        Spacer(),
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
+                        const Spacer(),
+                        IconButton(
+                          icon: Icon(
+                            repeatMode == AudioServiceRepeatMode.all
+                                ? Icons.repeat
+                                : shuffleMode == AudioServiceShuffleMode.all
+                                    ? Icons.shuffle
+                                    : Icons.repeat_one,
+                            size: 32,
+                          ),
+                          onPressed: () {
                             if (repeatMode == AudioServiceRepeatMode.all) {
                               AudioService.setShuffleMode(
                                   AudioServiceShuffleMode.all);
@@ -183,54 +191,65 @@ class _DetailPageState extends State<DetailPage> {
                                   AudioServiceRepeatMode.all.index);
                             }
                           },
-                          child: Icon(repeatMode == AudioServiceRepeatMode.all
-                              ? Icons.repeat
-                              : shuffleMode == AudioServiceShuffleMode.all
-                                  ? Icons.shuffle
-                                  : Icons.repeat_one),
                         ),
-                        Spacer(),
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.skip_previous,
+                            size: 32,
+                          ),
+                          onPressed: () {
                             AudioService.skipToPrevious();
                             AudioService.setShuffleMode(
                                 AudioServiceShuffleMode.all);
                           },
-                          child: Icon(Icons.skip_previous),
                         ),
-                        Spacer(),
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            if (isPlaying) {
-                              AudioService.pause();
-                            } else {
-                              AudioService.play();
-                            }
-                          },
-                          child: Icon(
-                            isPlaying
-                                ? Icons.pause_circle_outline
-                                : Icons.play_circle_outline,
-                            size: 50,
+                        const Spacer(),
+                        SizedBox(
+                          width: 70,
+                          height: 70,
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: Icon(
+                              isPlaying
+                                  ? Icons.pause_circle_outline
+                                  : Icons.play_circle_outline,
+                              size: 70,
+                            ),
+                            onPressed: () {
+                              if (isPlaying) {
+                                AudioService.pause();
+                              } else {
+                                AudioService.play();
+                              }
+                            },
                           ),
                         ),
-                        Spacer(),
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.skip_next,
+                            size: 32,
+                          ),
+                          onPressed: () {
                             AudioService.skipToNext();
                           },
-                          child: Icon(Icons.skip_next),
                         ),
-                        Spacer(),
-                        Icon(Icons.menu),
-                        Spacer(),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.queue_music,
+                            size: 32,
+                          ),
+                          onPressed: () {
+                            showPlayList(context);
+                          },
+                        ),
+                        const Spacer(),
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 40,
                   ),
                 ],

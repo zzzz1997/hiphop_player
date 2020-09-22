@@ -43,40 +43,40 @@ class S {
     );
   }
 
-  /// `Hiphop Player`
+  /// `Hiphop player`
   String get appName {
     return Intl.message(
-      'Hiphop Player',
+      'Hiphop player',
       name: 'appName',
       desc: '',
       args: [],
     );
   }
 
-  /// `Song List`
+  /// `Song list`
   String get songList {
     return Intl.message(
-      'Song List',
+      'Song list',
       name: 'songList',
       desc: '',
       args: [],
     );
   }
 
-  /// `Dark Mode`
+  /// `Dark mode`
   String get darkMode {
     return Intl.message(
-      'Dark Mode',
+      'Dark mode',
       name: 'darkMode',
       desc: '',
       args: [],
     );
   }
 
-  /// `Color Theme`
+  /// `Color theme`
   String get colorTheme {
     return Intl.message(
-      'Color Theme',
+      'Color theme',
       name: 'colorTheme',
       desc: '',
       args: [],
@@ -138,6 +138,86 @@ class S {
     return Intl.message(
       'Exit',
       name: 'exit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Music`
+  String get music {
+    return Intl.message(
+      'Music',
+      name: 'music',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No songs, search local`
+  String get noSongs {
+    return Intl.message(
+      'No songs, search local',
+      name: 'noSongs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Play all`
+  String get playAll {
+    return Intl.message(
+      'Play all',
+      name: 'playAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the song title`
+  String get enterSongTitle {
+    return Intl.message(
+      'Please enter the song title',
+      name: 'enterSongTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select song`
+  String get selectSong {
+    return Intl.message(
+      'Select song',
+      name: 'selectSong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Multiple choice`
+  String get multipleChoice {
+    return Intl.message(
+      'Multiple choice',
+      name: 'multipleChoice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current play`
+  String get currentPlay {
+    return Intl.message(
+      'Current play',
+      name: 'currentPlay',
       desc: '',
       args: [],
     );

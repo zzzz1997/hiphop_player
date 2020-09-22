@@ -171,7 +171,7 @@ class MyRoute {
       case list:
         return ListPage();
       case detail:
-        return AudioServiceWidget(child: DetailPage(map['albumArt']));
+        return DetailPage(map['albumArt']);
       case setting:
         return SettingPage();
       default:

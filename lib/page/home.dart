@@ -62,13 +62,10 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(Global.s.appName),
       ),
-      body: ListTileTheme(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 30,
-        ),
-        child: Column(
-          children: <Widget>[
-            Expanded(
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
                 children: [
                   const SizedBox(
@@ -93,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Text.rich(
                                 TextSpan(
-                                  text: '音乐',
+                                  text: Global.s.music,
                                   children: <InlineSpan>[
                                     TextSpan(
                                       text: '($_count)',
@@ -116,12 +113,32 @@ class _HomePageState extends State<HomePage> {
                       const Spacer(),
                     ],
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: const Padding(
+                      padding: EdgeInsets.only(
+                        left: 15,
+                      ),
+                      child: Text(
+                        '我的歌单',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                 ],
               ),
             ),
-            PlayerBar(),
-          ],
-        ),
+          ),
+          PlayerBar(),
+        ],
       ),
       drawer: Drawer(
         child: Column(

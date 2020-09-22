@@ -39,13 +39,13 @@ class ImageHelper {
       shape: shape,
       loadStateChanged: (ExtendedImageState s) =>
           s.extendedImageLoadState == LoadState.loading
-              ? Center(
+              ? const Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 2.0,
                   ),
                 )
               : s.extendedImageLoadState == LoadState.failed
-                  ? Center(
+                  ? const Center(
                       child: Icon(Icons.error_outline),
                     )
                   : null,

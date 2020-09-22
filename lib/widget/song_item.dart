@@ -14,9 +14,9 @@ class SongItem extends StatefulWidget {
   final List<MediaItem> songs;
 
   // 位置
-  final int index;
+  final MediaItem song;
 
-  SongItem(this.songs, this.index);
+  SongItem(this.songs, this.song);
 
   @override
   _SongItemState createState() => _SongItemState();
@@ -31,14 +31,15 @@ class _SongItemState extends State<SongItem> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () async {
-        var songs = widget.songs.sublist(widget.index) +
-            widget.songs.sublist(0, widget.index);
+        var index = widget.songs.indexOf(widget.song);
+        var songs =
+            widget.songs.sublist(index) + widget.songs.sublist(0, index);
         await AudioService.updateQueue(songs);
         await AudioService.skipToQueueItem(songs[0].id);
         await AudioService.play();
       },
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [
             Expanded(
@@ -46,11 +47,11 @@ class _SongItemState extends State<SongItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.songs[widget.index].title,
-                    style: TextStyle(fontSize: 16),
+                    widget.song.title,
+                    style: const TextStyle(fontSize: 16),
                   ),
                   Text(
-                    widget.songs[widget.index].artist,
+                    widget.song.artist,
                     style: TextStyle(
                       color: Global.brightnessColor(context,
                           light: Style.greyColor),
@@ -60,7 +61,13 @@ class _SongItemState extends State<SongItem> {
                 ],
               ),
             ),
-            Icon(Icons.more_vert),
+            SizedBox(
+              height: 32,
+              child: IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: () {},
+              ),
+            ),
           ],
         ),
       ),

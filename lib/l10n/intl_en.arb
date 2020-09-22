@@ -1,13 +1,21 @@
 {
   "_locale": "en",
-  "appName": "Hiphop Player",
-  "songList": "Song List",
-  "darkMode": "Dark Mode",
-  "colorTheme": "Color Theme",
+  "appName": "Hiphop player",
+  "songList": "Song list",
+  "darkMode": "Dark mode",
+  "colorTheme": "Color theme",
   "setting": "Setting",
   "font": "Font",
   "autoBySystem": "Auto",
   "fontKuaiLe": "ZCOOL KuaiLe",
   "language": "Language",
-  "exit": "Exit"
+  "exit": "Exit",
+  "music": "Music",
+  "noSongs": "No songs, search local",
+  "playAll": "Play all",
+  "enterSongTitle": "Please enter the song title",
+  "selectSong": "Select song",
+  "multipleChoice": "Multiple choice",
+  "delete": "Delete",
+  "currentPlay": "Current play"
 }
