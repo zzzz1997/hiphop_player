@@ -87,9 +87,9 @@ class MusicItemProvider {
   ///
   /// 删除单条数据
   ///
-  static Future<int> delete(String id) async {
+  static Future<int> delete(List<String> ids) async {
     return await SqfliteUtil.database
-        .delete(_table, where: 'id = ?', whereArgs: [id]);
+        .delete(_table, where: 'id = ?', whereArgs: ids);
   }
 
   ///

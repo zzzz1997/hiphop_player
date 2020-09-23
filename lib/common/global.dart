@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hiphop_player/entity/song_list.dart';
 import 'package:hiphop_player/generated/l10n.dart';
 import 'package:hiphop_player/sqflite/sqflite.dart';
 import 'package:oktoast/oktoast.dart';
@@ -46,6 +47,9 @@ class Global {
 
   // 歌曲位置键
   static const kSongPosition = 'kSongPosition';
+
+  // 歌单列表
+  static var songLists = List<SongList>();
 
   ///
   /// 初始化

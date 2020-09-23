@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:hiphop_player/sqflite/provider/music_item.dart';
+import 'package:hiphop_player/sqflite/provider/song_list.dart';
 import 'package:sqflite/sqflite.dart';
 
 ///
@@ -34,6 +35,7 @@ class SqfliteUtil {
   ///
   static FutureOr<void> _onCreate(Database db, int version) async {
     await MusicItemProvider.createTable(db);
+    await SongListProvider.createTable(db);
   }
 
   ///

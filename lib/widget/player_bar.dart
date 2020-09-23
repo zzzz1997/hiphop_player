@@ -54,7 +54,6 @@ class _PlayerBarState extends State<PlayerBar> {
       },
       child: Container(
         height: 48,
-        alignment: Alignment.center,
         decoration: const BoxDecoration(
           border: Border(
             top: BorderSide(
@@ -69,8 +68,8 @@ class _PlayerBarState extends State<PlayerBar> {
                 MediaItem(
                     id: '',
                     album: '',
-                    title: '暂无播放',
-                    artist: '未知歌手',
+                    title: Global.s.noPlayback,
+                    artist: Global.s.unknownSinger,
                     artUri: _albumArt);
             var isPlaying = snapshot.data?.playbackState?.playing ?? false;
             _albumArt = song.artUri;
@@ -144,7 +143,7 @@ class _PlayerBarState extends State<PlayerBar> {
                     size: 32,
                   ),
                   onPressed: () {
-                    showPlayList(context);
+                    showPlayListSheet(context);
                   },
                 ),
                 const SizedBox(

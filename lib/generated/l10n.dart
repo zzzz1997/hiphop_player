@@ -163,6 +163,16 @@ class S {
     );
   }
 
+  /// `Play`
+  String get play {
+    return Intl.message(
+      'Play',
+      name: 'play',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Play all`
   String get playAll {
     return Intl.message(
@@ -218,6 +228,166 @@ class S {
     return Intl.message(
       'Current play',
       name: 'currentPlay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Collect`
+  String get collect {
+    return Intl.message(
+      'Collect',
+      name: 'collect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Collect all`
+  String get collectAll {
+    return Intl.message(
+      'Collect all',
+      name: 'collectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Collect to song list`
+  String get collectToSongList {
+    return Intl.message(
+      'Collect to song list',
+      name: 'collectToSongList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New song list`
+  String get newSongList {
+    return Intl.message(
+      'New song list',
+      name: 'newSongList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please input song list title`
+  String get inputSongListTitle {
+    return Intl.message(
+      'Please input song list title',
+      name: 'inputSongListTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Conform`
+  String get conform {
+    return Intl.message(
+      'Conform',
+      name: 'conform',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Song list added success`
+  String get songListAddedSuccess {
+    return Intl.message(
+      'Song list added success',
+      name: 'songListAddedSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` songs`
+  String get songs {
+    return Intl.message(
+      ' songs',
+      name: 'songs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No playback`
+  String get noPlayback {
+    return Intl.message(
+      'No playback',
+      name: 'noPlayback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown singer`
+  String get unknownSinger {
+    return Intl.message(
+      'Unknown singer',
+      name: 'unknownSinger',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Song already exists`
+  String get songAlreadyExists {
+    return Intl.message(
+      'Song already exists',
+      name: 'songAlreadyExists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Collected to song list`
+  String get collectedToSongList {
+    return Intl.message(
+      'Collected to song list',
+      name: 'collectedToSongList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit info`
+  String get editInfo {
+    return Intl.message(
+      'Edit info',
+      name: 'editInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add to song list`
+  String get addToSongList {
+    return Intl.message(
+      'Add to song list',
+      name: 'addToSongList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Conform delete this song list?`
+  String get conformDeleteSongList {
+    return Intl.message(
+      'Conform delete this song list?',
+      name: 'conformDeleteSongList',
       desc: '',
       args: [],
     );

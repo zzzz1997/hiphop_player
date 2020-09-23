@@ -20,6 +20,17 @@ class SongItem extends StatefulWidget {
 
   @override
   _SongItemState createState() => _SongItemState();
+
+  ///
+  /// 播放音乐
+  ///
+  static playSongs(List<MediaItem> songs) async {
+    if (songs.isNotEmpty) {
+      await AudioService.updateQueue(songs);
+      await AudioService.skipToQueueItem(songs[0].id);
+      await AudioService.play();
+    }
+  }
 }
 
 ///
@@ -34,9 +45,7 @@ class _SongItemState extends State<SongItem> {
         var index = widget.songs.indexOf(widget.song);
         var songs =
             widget.songs.sublist(index) + widget.songs.sublist(0, index);
-        await AudioService.updateQueue(songs);
-        await AudioService.skipToQueueItem(songs[0].id);
-        await AudioService.play();
+        SongItem.playSongs(songs);
       },
       child: Padding(
         padding: const EdgeInsets.all(10.0),

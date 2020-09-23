@@ -37,8 +37,8 @@ class _DetailPageState extends State<DetailPage> {
             MediaItem(
                 id: '',
                 album: '',
-                title: '暂无播放',
-                artist: '未知歌手',
+                title: Global.s.noPlayback,
+                artist: Global.s.unknownSinger,
                 artUri: widget.albumArt);
         var isPlaying = snapshot.data?.playbackState?.playing ?? false;
         var shuffleMode = snapshot.data?.playbackState?.shuffleMode;
@@ -242,7 +242,7 @@ class _DetailPageState extends State<DetailPage> {
                             size: 32,
                           ),
                           onPressed: () {
-                            showPlayList(context);
+                            showPlayListSheet(context);
                           },
                         ),
                         const Spacer(),

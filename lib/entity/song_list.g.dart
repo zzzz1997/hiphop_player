@@ -20,7 +20,6 @@ SongList _$SongListFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$SongListToJson(SongList instance) => <String, dynamic>{
-      'id': instance.id,
       'name': instance.name,
       'cover': instance.cover,
       'number': instance.number,

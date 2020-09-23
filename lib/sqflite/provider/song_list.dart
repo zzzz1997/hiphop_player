@@ -1,5 +1,7 @@
+import 'package:hiphop_player/common/global.dart';
 import 'package:hiphop_player/entity/song_list.dart';
 import 'package:hiphop_player/sqflite/sqflite.dart';
+import 'package:hiphop_player/util/event_bus.dart';
 import 'package:sqflite/sqflite.dart';
 
 ///
@@ -79,6 +81,18 @@ class SongListProvider {
     return maps.map((e) {
       return SongList.fromJson(e);
     }).toList();
+  }
+
+  ///
+  /// 更新歌单
+  ///
+  static Future<int> update(SongList songList) async {
+    var length = await SqfliteUtil.database.update(_table, songList.toJson(),
+        where: 'id = ?', whereArgs: [songList.id]);
+    Global.songLists[Global.songLists
+        .indexWhere((element) => element.id == songList.id)] = songList;
+    EventBusUtil.instance.fire(SongListUpdateEvent());
+    return length;
   }
 
   ///

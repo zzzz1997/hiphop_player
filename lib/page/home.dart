@@ -8,11 +8,16 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hiphop_player/common/global.dart';
 import 'package:hiphop_player/common/resource.dart';
 import 'package:hiphop_player/common/route.dart';
+import 'package:hiphop_player/entity/song_list.dart';
 import 'package:hiphop_player/model/theme.dart';
 import 'package:hiphop_player/service/audio_player_task.dart';
 import 'package:hiphop_player/sqflite/provider/music_item.dart';
+import 'package:hiphop_player/sqflite/provider/song_list.dart';
 import 'package:hiphop_player/sqflite/sqflite.dart';
+import 'package:hiphop_player/util/event_bus.dart';
+import 'package:hiphop_player/widget/albun_art.dart';
 import 'package:hiphop_player/widget/player_bar.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 ///
@@ -46,13 +51,13 @@ class _HomePageState extends State<HomePage> {
       androidNotificationIcon: 'mipmap/ic_launcher',
       androidEnableQueue: true,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      EasyLoading.show();
-      _count = await MusicItemProvider.count();
-      if (_count > 0) {
+    EventBusUtil.instance.on<SongListUpdateEvent>().listen((_) {
+      if (mounted) {
         setState(() {});
       }
-      EasyLoading.dismiss();
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _init();
     });
   }
 
@@ -77,7 +82,9 @@ class _HomePageState extends State<HomePage> {
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
-                            MyRoute.pushNamed(MyRoute.list);
+                            MyRoute.pushNamed(MyRoute.list).then((_) {
+                              _init();
+                            });
                           },
                           child: Column(
                             children: [
@@ -132,6 +139,18 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(
                     height: 20,
+                  ),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                    ),
+                    itemBuilder: (_, i) => _buildSongList(Global.songLists[i]),
+                    separatorBuilder: (_, __) => SizedBox(
+                      height: 10,
+                    ),
+                    itemCount: Global.songLists.length,
                   ),
                 ],
               ),
@@ -201,6 +220,122 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  ///
+  /// 构建歌单
+  ///
+  Widget _buildSongList(SongList songList) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        MyRoute.pushNamed(MyRoute.list, arguments: {
+          'id': songList.id,
+        });
+      },
+      child: Row(
+        children: [
+          songList == null
+              ? const Icon(
+                  Icons.add,
+                  size: 40,
+                )
+              : AlbumArt(
+                  songList.cover,
+                  size: 40,
+                  shape: BoxShape.rectangle,
+                ),
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(songList.name),
+                Text(
+                  '${songList.number}${Global.s.songs}',
+                  style: TextStyle(
+                    color:
+                        Global.brightnessColor(context, light: Style.greyColor),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 32,
+            child: PopupMenuButton(
+              icon: Icon(Icons.more_vert),
+              itemBuilder: (_) => <PopupMenuItem<String>>[
+                PopupMenuItem(
+                  value: '编辑信息',
+                  child: Text(Global.s.editInfo),
+                ),
+                PopupMenuItem(
+                  value: '删除',
+                  child: Text(Global.s.delete),
+                ),
+              ],
+              onSelected: (s) {
+                switch (s) {
+                  case '编辑信息':
+                    break;
+                  case '删除':
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        content: Text(Global.s.conformDeleteSongList),
+                        actions: [
+                          FlatButton(
+                            onPressed: () {
+                              Global.navigator.pop();
+                            },
+                            child: Text(Global.s.cancel),
+                          ),
+                          FlatButton(
+                            onPressed: () async {
+                              try {
+                                await SongListProvider.delete(songList.id);
+                                Global.songLists.remove(songList);
+                                setState(() {});
+                              } catch (e) {
+                                showToast(e.toString());
+                              }
+                              Global.navigator.pop();
+                            },
+                            child: Text(Global.s.delete),
+                          ),
+                        ],
+                      ),
+                    );
+                    break;
+                  default:
+                    break;
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ///
+  /// 初始化
+  ///
+  _init() async {
+    EasyLoading.show();
+    _count = await MusicItemProvider.count();
+    if (_count > 0 && mounted) {
+      setState(() {});
+    }
+    Global.songLists = await SongListProvider.queryAllWithoutSongs();
+    if (Global.songLists.isNotEmpty && mounted) {
+      setState(() {});
+    }
+    EasyLoading.dismiss();
   }
 
   ///

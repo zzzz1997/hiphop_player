@@ -10,3 +10,7 @@ class EventBusUtil {
   // 单例
   static final instance = EventBus();
 }
+
+class SongListUpdateEvent {
+
+}

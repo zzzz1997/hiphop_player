@@ -58,7 +58,7 @@ class MyRoute {
     AnimationType animationType = arguments != null
         ? arguments['animationType'] ?? AnimationType.NO_ANIM
         : AnimationType.NO_ANIM;
-    Map map = arguments != null ? arguments['arguments'] : {};
+    Map map = arguments != null ? arguments['arguments'] ?? {} : {};
     switch (animationType) {
       case AnimationType.NO_ANIM:
         return PageRouteBuilder(
@@ -169,7 +169,7 @@ class MyRoute {
       case home:
         return AudioServiceWidget(child: HomePage());
       case list:
-        return ListPage();
+        return ListPage(map['id']);
       case detail:
         return DetailPage(map['albumArt']);
       case setting:

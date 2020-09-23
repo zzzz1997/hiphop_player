@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hiphop_player/common/global.dart';
 import 'package:hiphop_player/common/resource.dart';
 import 'package:hiphop_player/widget/player_bar.dart';
+import 'package:hiphop_player/widget/song_list.dart';
 
 ///
 /// 播放列表页面
@@ -12,13 +13,13 @@ import 'package:hiphop_player/widget/player_bar.dart';
 ///
 class _PlayListFragment extends StatefulWidget {
   @override
-  __PlayListFragmentState createState() => __PlayListFragmentState();
+  _PlayListFragmentState createState() => _PlayListFragmentState();
 }
 
 ///
 /// 播放列表页面状态
 ///
-class __PlayListFragmentState extends State<_PlayListFragment> {
+class _PlayListFragmentState extends State<_PlayListFragment> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,7 +29,11 @@ class __PlayListFragmentState extends State<_PlayListFragment> {
         builder: (_, snapshot) {
           var song = snapshot.data?.mediaItem ??
               MediaItem(
-                  id: '', album: '', title: '暂无播放', artist: '未知歌手', artUri: '');
+                  id: '',
+                  album: '',
+                  title: Global.s.noPlayback,
+                  artist: Global.s.unknownSinger,
+                  artUri: '');
           var songs = snapshot.data?.queue ?? [];
           return Column(
             children: [
@@ -52,6 +57,25 @@ class __PlayListFragmentState extends State<_PlayListFragment> {
                             fontSize: 14,
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                  Spacer(),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if (songs.isNotEmpty) {
+                        showSongListDialog(context, songs);
+                      }
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.playlist_add),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(Global.s.collectAll),
                       ],
                     ),
                   ),
@@ -151,7 +175,7 @@ class __PlayListFragmentState extends State<_PlayListFragment> {
 ///
 /// 展示播放列表
 ///
-showPlayList(BuildContext context) {
+showPlayListSheet(BuildContext context) {
   return showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
