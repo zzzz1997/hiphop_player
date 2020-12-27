@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:audio_service/audio_service.dart';
 
-part 'song_list.g.dart';
-
 ///
 /// 歌单实体
 ///
@@ -28,8 +26,22 @@ class SongList {
 
   SongList(this.id, this.name, this.cover, this.number, this.songs);
 
-  factory SongList.fromJson(Map<String, dynamic> json) =>
-      _$SongListFromJson(json);
+  factory SongList.fromJson(Map<String, dynamic> json) => SongList(
+        json['id'] as int,
+        json['name'] as String,
+        json['cover'] as String,
+        json['number'] as int,
+        (jsonDecode((json['songs'] as String) ?? '[]') as List)
+            ?.map((e) => e == null
+                ? null
+                : MediaItem.fromJson(e as Map<String, dynamic>))
+            ?.toList(),
+      );
 
-  Map<String, dynamic> toJson() => _$SongListToJson(this);
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'cover': cover,
+        'number': number,
+        'songs': jsonEncode(songs.map((e) => e.toJson()).toList()),
+      };
 }

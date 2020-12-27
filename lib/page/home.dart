@@ -90,6 +90,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Icon(
                                 Icons.music_note,
+                                size: 32,
                                 color: Theme.of(context).accentColor,
                               ),
                               const SizedBox(

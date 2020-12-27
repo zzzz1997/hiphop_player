@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hiphop_player/entity/song_list.dart';
 import 'package:hiphop_player/generated/l10n.dart';
 import 'package:hiphop_player/sqflite/sqflite.dart';
+import 'package:logger/logger.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,6 +34,9 @@ class Global {
   // SharedPreferences对象
   static SharedPreferences sharedPreferences;
 
+  // 日志
+  static Logger logger;
+
   // 随机模式键
   static const kShuffleMode = 'kShuffleMode';
 
@@ -55,6 +59,7 @@ class Global {
   /// 初始化
   ///
   static init() async {
+    logger = Logger();
     sharedPreferences = await SharedPreferences.getInstance();
     await SqfliteUtil.init();
   }

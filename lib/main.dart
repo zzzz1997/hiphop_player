@@ -67,7 +67,12 @@ class MyApp extends StatelessWidget {
             onGenerateRoute: MyRoute.generateRoute,
             initialRoute: MyRoute.splash,
             builder: (_, child) => FlutterEasyLoading(
-              child: child,
+              child: GestureDetector(
+                onTap: () {
+                  SystemChannels.textInput.invokeMethod('TextInput.hide');
+                },
+                child: child,
+              ),
             ),
           ),
         ),

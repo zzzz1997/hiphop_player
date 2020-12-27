@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hiphop_player/common/resource.dart';
 
 ///
@@ -112,16 +113,20 @@ class AlbumArt extends StatelessWidget {
               if (state.extendedImageLoadState == LoadState.completed) {
                 return state.completedWidget;
               } else {
-                return Icon(
-                  IconFonts.album,
-                  size: size,
+                return SvgPicture.asset(
+                  ImageHelper.image('ic_album.svg'),
+                  width: size,
+                  height: size,
+                  color: Theme.of(context).accentColor,
                 );
               }
             },
           )
-        : Icon(
-            IconFonts.album,
-            size: size,
+        : SvgPicture.asset(
+            ImageHelper.image('ic_album.svg'),
+            width: size,
+            height: size,
+            color: Theme.of(context).accentColor,
           );
   }
 }

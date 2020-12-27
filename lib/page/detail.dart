@@ -5,6 +5,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hiphop_player/common/global.dart';
 import 'package:hiphop_player/widget/albun_art.dart';
+import 'package:hiphop_player/widget/lrc_widget.dart';
 import 'package:hiphop_player/widget/play_list.dart';
 import 'package:hiphop_player/widget/player_bar.dart';
 
@@ -28,6 +29,9 @@ class DetailPage extends StatefulWidget {
 /// 详情页面状态
 ///
 class _DetailPageState extends State<DetailPage> {
+  // 是否展示歌词
+  var _showLrc = false;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<ScreenState>(
@@ -87,14 +91,33 @@ class _DetailPageState extends State<DetailPage> {
               Column(
                 children: [
                   Expanded(
-                    child: Center(
-                      child: Hero(
-                        tag: widget.albumArt,
-                        child: AnimateAlbumArt(
-                          song.artUri,
-                          isPlaying,
-                          size: 200,
-                        ),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        _showLrc = !_showLrc;
+                        setState(() {});
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          AnimatedOpacity(
+                            opacity: _showLrc ? 0 : 1,
+                            duration: const Duration(milliseconds: 500),
+                            child: Hero(
+                              tag: widget.albumArt,
+                              child: AnimateAlbumArt(
+                                song.artUri,
+                                isPlaying,
+                                size: 200,
+                              ),
+                            ),
+                          ),
+                          AnimatedOpacity(
+                            opacity: _showLrc ? 1 : 0,
+                            duration: const Duration(milliseconds: 500),
+                            child: LrcWidget(),
+                          ),
+                        ],
                       ),
                     ),
                   ),

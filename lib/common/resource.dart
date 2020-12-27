@@ -14,7 +14,7 @@ class IconFonts {
   static const String _fontFamily = 'fluzz';
 
   // fluzz图标
-  static const IconData album = IconData(0xe609, fontFamily: _fontFamily);
+  static const IconData album = IconData(0xe663, fontFamily: _fontFamily);
 }
 
 ///

@@ -39,6 +39,8 @@ dependencies:
   event_bus: ^1.1.1
   # rx
   rxdart: ^0.24.1
+  # 日志
+  logger: ^0.9.4
 
 dev_dependencies:
   flutter_test:
